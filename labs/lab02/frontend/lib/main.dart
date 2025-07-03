@@ -10,14 +10,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  // TODO: Initialize chatService and userService
-  final ChatService chatService = ChatService();
-  final UserService userService = UserService();
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Initialize chatService and userService
+    final ChatService chatService = ChatService();
+    final UserService userService = UserService();
     return MaterialApp(
       title: 'Lab 02 Chat',
       theme: ThemeData(

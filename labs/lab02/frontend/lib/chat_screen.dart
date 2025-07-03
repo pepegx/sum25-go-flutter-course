@@ -28,6 +28,21 @@ class _ChatScreenState extends State<ChatScreen> {
     _connectAndListen();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _refreshMessages();
+  }
+
+  void _refreshMessages() {
+    if (mounted && !_isLoading) {
+      setState(() {
+        _messages.clear();
+        _messages.addAll(widget.chatService.messageHistory);
+      });
+    }
+  }
+
   Future<void> _connectAndListen() async {
     try {
       setState(() {
@@ -37,10 +52,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
       await widget.chatService.connect();
       
+      setState(() {
+        _messages.clear();
+        _messages.addAll(widget.chatService.messageHistory);
+      });
+      
       _messageSubscription = widget.chatService.messageStream.listen(
         (message) {
           setState(() {
-            _messages.add(message);
+            if (!_messages.contains(message)) {
+              _messages.add(message);
+            }
           });
         },
         onError: (error) {
@@ -66,7 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: Dispose controllers and subscriptions
     _messageController.dispose();
     _messageSubscription?.cancel();
-    widget.chatService.dispose();
     super.dispose();
   }
 
